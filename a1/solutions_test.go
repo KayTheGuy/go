@@ -268,8 +268,14 @@ func TestLinearSearch(t *testing.T) {
 		t.Fatalf("Error: linearSearch(): expected returned index to be -1 but it was: %v", returnedIdx)
 	}
 
-	linearSearch(3, sampleBoolArray)
-	assert
+	// test the panic case for mismatch argument types
+	defer func() {
+		if r := recover(); r == nil { // report error if linearSearch did not panic
+			t.Fatalf("Error: linearSearch() did not panic as expected\n The first argument is of type int and the elements in the second arguments are of type boolean")
+		}
+	}()
+	linearSearch(4, sampleBoolArray)
+
 }
 
 //=====================================================
