@@ -88,6 +88,7 @@ func TestEqualsTime24(t *testing.T) {
 	t2 := Time24{00, 01, 5}
 	t3 := Time24{000, 4, 5}
 	t4 := Time24{35, 65, 34}
+	t5 := Time24{35, 65, 34}
 
 	if !equalsTime24(t1, t1) {
 		t.Fatalf("Error: equalsTime24:  expected t1 be equal to itself: t1 was: %v ", t1.String())
@@ -98,8 +99,8 @@ func TestEqualsTime24(t *testing.T) {
 	if equalsTime24(t1, t3) {
 		t.Fatalf("Error: equalsTime24:  expected t1 and t3 be different: t1 was: %v and t3 was: %v", t1.String(), t3.String())
 	}
-	if equalsTime24(t1, t4) {
-		t.Fatalf("Error: equalsTime24:  expected t1 and t4 be different: t1 was: %v and t3 was: %v", t1.String(), t4.String())
+	if equalsTime24(t5, t4) {
+		t.Fatalf("Error: equalsTime24:  expected false return value becasue t4 and t5 are invalid: t4 was: %v and t5 was: %v", t4.String(), t5.String())
 	}
 }
 
@@ -118,21 +119,22 @@ func TestLessThanTime24(t *testing.T) {
 	if !lessThanTime24(t1, t3) {
 		t.Fatalf("Error: lessThanTime24: expected t1 be less than t3: t1 was: %v and t3 was: %v", t1.String(), t3.String())
 	}
-	if !lessThanTime24(t2, t4) {
-		t.Fatalf("Error: lessThanTime24: expected t2 be less than t4: t2 was: %v and t4 was: %v", t2.String(), t4.String())
+	if lessThanTime24(t2, t4) {
+		t.Fatalf("Error: lessThanTime24: expected false return value because t4 is invalid: t2 was: %v and t4 was: %v", t2.String(), t4.String())
 	}
 }
-
 func TestString(t *testing.T) {
 	t1 := Time24{0, 1, 05}
 	t2 := Time24{00, 01, 5}
 	t3 := Time24{000, 44, 5}
+	t4 := Time24{23, 44, 05}
 
 	s1 := t1.String()
 	s2 := t2.String()
 	s3 := t3.String()
+	s4 := t4.String()
 
-	if s1 != "00:01:05" || s2 != "00:01:05" || s3 != "00:44:05" {
+	if s1 != "00:01:05" || s2 != "00:01:05" || s3 != "00:44:05" || s4 != "23:44:05" {
 		t.Fatalf("Error: Sting() method is not working as expected")
 	}
 }

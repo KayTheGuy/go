@@ -86,19 +86,25 @@ type Time24 struct {
 }
 
 // returns true if <a> and <b> are exactly the same time
+// returns false if either <a> or <b> are invalid Time24
 func equalsTime24(a, b Time24) bool {
 	isEqual := false
-	if a.hour == b.hour && a.minute == b.minute && a.second == b.second {
-		isEqual = true
+	if a.validTime24() && b.validTime24() {
+		if a.hour == b.hour && a.minute == b.minute && a.second == b.second {
+			isEqual = true
+		}
 	}
 	return isEqual
 }
 
 // returns true if <a> is strictly less than <b>
+// returns false if either <a> or <b> are invalid Time24
 func lessThanTime24(a, b Time24) bool {
 	isLess := false
-	if (a.hour < b.hour) || (a.hour == b.hour && a.minute < b.minute) || (a.hour == b.hour && a.minute == b.minute && a.second < b.second) {
-		isLess = true
+	if a.validTime24() && b.validTime24() {
+		if (a.hour < b.hour) || (a.hour == b.hour && a.minute < b.minute) || (a.hour == b.hour && a.minute == b.minute && a.second < b.second) {
+			isLess = true
+		}
 	}
 	return isLess
 }
