@@ -112,7 +112,7 @@ func formatHTML(tokens *[]JSONtoken) {
 	escapeReplacer := strings.NewReplacer("\\n", "<span style=\"color:#FF8C00\">\\n</span>", "\\u8a3e", "<span style=\"color:#FF8C00\">\\u8a3e</span>")
 
 	// value used for indenting nested brackets and commas
-	numOfIndent := 0
+	numOfIndent := -1
 	// print the HTML headers
 	fmt.Println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")
 	fmt.Println("<html>\n<head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-8\">")
@@ -126,19 +126,20 @@ func formatHTML(tokens *[]JSONtoken) {
 			fmt.Printf("<br>")
 			if token.value == "{" {
 				numOfIndent++
-			} else {
-				numOfIndent--
 			}
 			for i := 0; i < numOfIndent; i++ {
 				fmt.Printf("&nbsp;&nbsp;")
 			}
 			fmt.Printf("<span style=\"color:red\">%v</span>", token.value)
+			if token.value == "}" {
+				numOfIndent--
+			}
 		case BRACKET:
 			fmt.Printf("<span style=\"color:#FFFF00\">%v</span>", token.value)
 		case COMMA:
 			fmt.Printf("<span style=\"color:#FF00FF\">%v</span><br>", token.value)
 			for i := 0; i < numOfIndent; i++ {
-				fmt.Printf("&nbsp;&nbsp;")
+				fmt.Printf("&nbsp;&nbsp;&nbsp;")
 			}
 		case COLON:
 			fmt.Printf("<span style=\"color:#3BB9FF\">%v &nbsp;</span>", token.value)
