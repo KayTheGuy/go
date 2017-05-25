@@ -23,14 +23,14 @@ type JSONtoken struct {
 
 // JSON token definition
 const (
-	BRACE     = 1
-	BRACKET   = 2
-	COMMA     = 3
-	COLON     = 4
-	MINUS     = 5
-	NUMBER    = 6
-	NULTRUFLS = 7 // null, true, or false
-	STRING    = 8
+	BRACE     uint8 = 1
+	BRACKET   uint8 = 2
+	COMMA     uint8 = 3
+	COLON     uint8 = 4
+	MINUS     uint8 = 5
+	NUMBER    uint8 = 6
+	NULTRUFLS uint8 = 7 // null, true, or false
+	STRING    uint8 = 8
 )
 
 func main() {
@@ -50,26 +50,25 @@ func main() {
 	dataString := string(dataByte) // convert data from byte stream to string
 
 	tokens := scanJSON(&dataString) // get JSON tokens
-	// for _, t := range tokens {
-	// 	fmt.Println(t.key, ":", t.value)
-	// }
-	formatHTML(&tokens)
+	formatHTML(&tokens)             // format in HTML
 }
 
 func scanJSON(data *string) []JSONtoken {
 	var tokens []JSONtoken
 	var token JSONtoken
+	var currentToken rune
+	var currentString string
 
 	var scnr scanner.Scanner
 	scnr.Init(strings.NewReader(*data))
-	var currentToken rune
-	var currentString string
+
 	// regular expression for strings
-	var stringPattern = regexp.MustCompile(`"(.)*?"`)
-	// regular expression for numbers
-	// NOTE: existence of even one digit suffice to recognize the token as number
-	// 		 because it is evaluated after string and the problem assumes the input JSON is valid
-	var numPattern = regexp.MustCompile("[0-9]+")
+	stringPattern := regexp.MustCompile(`"(.)*?"`)
+
+	/* regular expression for numbers
+	NOTE: existence of even one digit suffice to recognize the token as number
+	because it is evaluated after string and the problem assumes the input JSON is valid*/
+	numPattern := regexp.MustCompile("[0-9]+")
 
 	currentToken = scnr.Scan() // read first token
 	for currentToken != scanner.EOF {
@@ -102,39 +101,59 @@ func scanJSON(data *string) []JSONtoken {
 }
 
 func formatHTML(tokens *[]JSONtoken) {
+	/* replace HTML special characters:
+	   < with &lt;  > with &gt;  & with &amp;
+	   " with &quot; ' with &apos; Space with &nbsp; */
+	htmlReplacer := strings.NewReplacer("\"", "&quot;", "'", "&apos;", "&", "&amp;", ">", "&gt;", "<", "&lt;", " ", "&nbsp;")
+	/* change color of escape characters within string:
+	\n with <span style=\"color:#FF8C00\">\n</span>
+	\u8a3e with <span style=\"color:#FF8C00\">\u8a3e</span>
+	*/
+	escapeReplacer := strings.NewReplacer("\\n", "<span style=\"color:#FF8C00\">\\n</span>", "\\u8a3e", "<span style=\"color:#FF8C00\">\\u8a3e</span>")
+
+	// value used for indenting nested brackets and commas
+	numOfIndent := 0
 	// print the HTML headers
 	fmt.Println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")
-	fmt.Println("<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>")
-	fmt.Println("<title>JSON to HTML Formater</title>\n<link rel=\"stylesheet\" href=\"style.css\"/>\n</head><body>")
-	fmt.Println("<span style=\"font-family:monospace; white-space:pre\">")
+	fmt.Println("<html>\n<head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-8\">")
+	fmt.Println("<title>JSON to HTML Formater</title>\n</head><body style=\"background-color:#DEDEDC\">")
+	fmt.Println("<p><span style=\"font-family:monospace; white-space:pre\">")
 
-	// begining of JSON code
-	// TODO: finalize indentation and colors
+	// start of JSON code
 	for _, token := range *tokens {
 		switch token.key {
 		case BRACE:
-			fmt.Printf("<br><span style=\"color:red\">%v</span>&nbsp;", token.value)
+			fmt.Printf("<br>")
+			if token.value == "{" {
+				numOfIndent++
+			} else {
+				numOfIndent--
+			}
+			for i := 0; i < numOfIndent; i++ {
+				fmt.Printf("&nbsp;&nbsp;")
+			}
+			fmt.Printf("<span style=\"color:red\">%v</span>", token.value)
 		case BRACKET:
-			fmt.Printf("<span style=\"color:#ffa500\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#FFFF00\">%v</span>", token.value)
 		case COMMA:
-			fmt.Printf("<span style=\"color:#2cad6b\">&nbsp;%v <br>&nbsp;</span>", token.value)
+			fmt.Printf("<span style=\"color:#FF00FF\">%v</span><br>", token.value)
+			for i := 0; i < numOfIndent; i++ {
+				fmt.Printf("&nbsp;&nbsp;")
+			}
 		case COLON:
-			fmt.Printf("<span style=\"color:#00ffff\">&nbsp;&nbsp;&nbsp; %v &nbsp;&nbsp;&nbsp;</span>", token.value)
+			fmt.Printf("<span style=\"color:#3BB9FF\">%v &nbsp;</span>", token.value)
 		case MINUS:
-			fmt.Printf("<span style=\"color:#ff0000\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#F88017\">%v</span>", token.value)
 		case NUMBER:
-			fmt.Printf("<span style=\"color:#477ec7\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#2B65EC\">%v</span>", token.value)
 		case NULTRUFLS:
 			fmt.Printf("<span style=\"color:#b22222\">%v</span>", token.value)
 		case STRING:
-			fmt.Printf("<span style=\"color:black\">%v", token.value)
-			// TODO: change color for scape characters
-			// TODO: replace html espcial characters
+			// replace html espcial characters and change color for escape chars
+			fmt.Printf("<span style=\"color:black\">%v</span>", escapeReplacer.Replace(htmlReplacer.Replace(token.value)))
 		}
 	}
-
 	// end of JSOC code
 
-	fmt.Println("</span></body></html>")
-
+	fmt.Println("</span></p></body></html>")
 }

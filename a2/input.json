@@ -1,2 +1,48 @@
-
-{"Message": "Hello\n\"", "Array": [1.123E+23, 2, -3e-123], "Null": null, "Number": true}
+{"web-app": {
+  "servlet": [   
+    {
+      "\nservlet-name": "cofaxCDS",
+      "servlet-class": null,
+      "init-param": {
+        "configGlossary:installationAt": "Philadelphia, PA",
+        "defaultFileTemplate": [12, -23.23E+12, null, 123.123e+12, true],
+        "useJSP": false,
+        "jspListTemplate": "listTemplate.jsp",
+        "jspFileTemplate": "articleTemplate.jsp",
+        "cachePackageTagsTrack": -200,
+        "cachePackage\nTagsStore": 200,
+        "cachePagesTrack": 200,
+        "cachePagesStore": -100e+12,
+        "searchEngineRobotsDb": "WEB-INF/robots.db",
+        "dataStoreInitConns": 10,
+        "dataStoreMaxConns": 100,
+        "dataStoreConnUsageLimit": 100,
+        "dataStoreLogLevel": "debug",
+        "maxUrlLength": 500}},
+    {
+      "servlet-class": "org.cofax.cds.EmailServlet",
+      "init-param": {
+      "mailHost": "mail1",
+      "mailHostOverride": "mail2"}},
+    {
+      "servlet-name": "cofaxAdmin",
+      "servlet-class": "org.cofax.cds.AdminServlet"},
+ 
+    {
+      "servlet-class": "org.cofax.cds.FileServlet"},
+    {
+      "servlet-name": "cofaxTools",
+      "init-param": {
+        "templatePath": "toolstemplates/",
+        "log": 1,
+        "logMaxSize": "",
+        "adminGroupID": 4,
+        "betaServer": true}}],
+  "servlet-mapping": {
+    "cofaxCDS": "/",
+    "fileServlet": "/static/*",
+    "cofaxTools": "/tools/*"},
+ 
+  "taglib": {
+    "taglib-uri": null,
+    "taglib-location": "/WEB-INF/tlds/cofax.tld"}}}
