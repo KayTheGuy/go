@@ -15,13 +15,13 @@ import (
 	"text/scanner"
 )
 
-// JSONtoken : to store tokens returned by decodeJSON()
+// JSONtoken : to store tokens returned by scanJSON()
 type JSONtoken struct {
 	key   uint8
 	value string
 }
 
-// JSON token definition
+// constant values for JSONtoken.key
 const (
 	BRACE     uint8 = 1
 	BRACKET   uint8 = 2
@@ -73,7 +73,6 @@ func scanJSON(data *string) []JSONtoken {
 	currentToken = scnr.Scan() // read first token
 	for currentToken != scanner.EOF {
 		currentString = scnr.TokenText()
-		currentToken = scnr.Scan() // read the remaining tokens including EOF
 
 		// find type for JSONtoken type
 		switch {
@@ -96,20 +95,25 @@ func scanJSON(data *string) []JSONtoken {
 		}
 		token.value = currentString
 		tokens = append(tokens, token)
+
+		currentToken = scnr.Scan() // read the remaining tokens including EOF
 	}
 	return tokens
 }
 
 func formatHTML(tokens *[]JSONtoken) {
-	/* replace HTML special characters:
+	/* replacer for HTML special characters:
 	   < with &lt;  > with &gt;  & with &amp;
 	   " with &quot; ' with &apos; Space with &nbsp; */
 	htmlReplacer := strings.NewReplacer("\"", "&quot;", "'", "&apos;", "&", "&amp;", ">", "&gt;", "<", "&lt;", " ", "&nbsp;")
-	/* change color of escape characters within string:
-	\n with <span style=\"color:#FF8C00\">\n</span>
-	\u8a3e with <span style=\"color:#FF8C00\">\u8a3e</span>
+	/* replacer to change color of JSON escape characters within string:
+	e.g. : \n with <span style=\"color:#FF8C00\">\n</span>
 	*/
-	escapeReplacer := strings.NewReplacer("\\n", "<span style=\"color:#FF8C00\">\\n</span>", "\\u8a3e", "<span style=\"color:#FF8C00\">\\u8a3e</span>")
+	escapeReplacer := strings.NewReplacer("\\n", "<span style=\"color:#FF8C00\">\\n</span>",
+		"\\b", "<span style=\"color:#FF8C00\">\\b</span>", "\\f", "<span style=\"color:#FF8C00\">\\f</span>",
+		"\\r", "<span style=\"color:#FF8C00\">\\r</span>", "\\t", "<span style=\"color:#FF8C00\">\\t</span>",
+		"\\u", "<span style=\"color:#FF8C00\">\\u</span>", "\\\\", "<span style=\"color:#FF8C00\">\\\\</span>",
+		"\\\"", "<span style=\"color:#FF8C00\">\\\"</span>")
 
 	// value used for indenting nested brackets and commas
 	numOfIndent := -1

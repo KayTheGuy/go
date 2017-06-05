@@ -1,28 +1,28 @@
-{"web-app": 
+{"web-app\"": 
     {"servlet": [  
         {"\nservlet-name": "cofaxCDS",
         "servlet-class": null,
-        "init-param": {"configGlossary:installationAt": "Philadelphia, PA",
+        "\\init-param": {"configGlossary:installationAt": "Philadelphia, PA",
                         "defaultFileTemplate": [12, -23.23E+12, null, 123.123e+12, true],
                         "useJSP": false,
-                        "jspListTemplate": "listTemplate.jsp",
+                        "\bjspListTemplate": "listTemplate.jsp",
                         "jspFileTemplate": "articleTemplate.jsp",
                         "cachePackageTagsTrack": -200,
                         "cachePackage\nTagsStore": 200,
                         "cachePagesTrack": 200,
                         "cachePagesStore": -100e+12,
-                        "searchEngineRobotsDb": "WEB-INF/robots.db",
+                        "search\rEngineRobotsDb": "WEB-INF/robots.db",
                         "dataStoreInitConns": 10,
                         "dataStoreMaxConns": 100,
                         "dataStoreConnUsageLimit": 100,
-                        "dataStoreLogLevel": "debug",
-                        "maxUrlLength": 500
+                        "\fdataStoreLogLevel": "debug",
+                        "maxUrlLength\t": 500
                         }
             },
     {
-      "servlet-class": "org.cofax.cds.EmailServlet",
+      "\u8ac7 servlet-class": "org.cofax.cds.EmailServlet",
       "init-param": {
-      "mailHost": "mail1",
+      "\nmailHost": "mail1",
       "mailHostOverride": "mail2"}},
     {
       "servlet-name": "cofaxAdmin",
