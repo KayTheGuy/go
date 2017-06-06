@@ -17,8 +17,8 @@ import (
 
 // JSONtoken : to store tokens returned by scanJSON()
 type JSONtoken struct {
-	key   uint8
-	value string
+	key    uint8
+	lexeme string
 }
 
 // constant values for JSONtoken.key
@@ -47,8 +47,7 @@ func main() {
 		panic(errMsg)
 	}
 
-	dataString := string(dataByte) // convert data from byte stream to string
-
+	dataString := string(dataByte)  // convert data from byte stream to string
 	tokens := scanJSON(&dataString) // get JSON tokens
 	formatHTML(&tokens)             // format in HTML
 }
@@ -93,7 +92,7 @@ func scanJSON(data *string) []JSONtoken {
 		case numPattern.MatchString(currentString):
 			token.key = NUMBER
 		}
-		token.value = currentString
+		token.lexeme = currentString
 		tokens = append(tokens, token)
 
 		currentToken = scnr.Scan() // read the remaining tokens including EOF
@@ -105,21 +104,34 @@ func formatHTML(tokens *[]JSONtoken) {
 	/* replacer for HTML special characters:
 	   < with &lt;  > with &gt;  & with &amp;
 	   " with &quot; ' with &apos; Space with &nbsp; */
-	htmlReplacer := strings.NewReplacer("\"", "&quot;", "'", "&apos;", "&", "&amp;", ">", "&gt;", "<", "&lt;", " ", "&nbsp;")
+	htmlReplacer := strings.NewReplacer(
+		"\"", "&quot;",
+		"'", "&apos;",
+		"&", "&amp;",
+		">", "&gt;",
+		"<", "&lt;",
+		" ", "&nbsp;",
+	)
 	/* replacer to change color of JSON escape characters within string:
 	e.g. : \n with <span style=\"color:#FF8C00\">\n</span>
 	*/
-	escapeReplacer := strings.NewReplacer("\\n", "<span style=\"color:#FF8C00\">\\n</span>",
-		"\\b", "<span style=\"color:#FF8C00\">\\b</span>", "\\f", "<span style=\"color:#FF8C00\">\\f</span>",
-		"\\r", "<span style=\"color:#FF8C00\">\\r</span>", "\\t", "<span style=\"color:#FF8C00\">\\t</span>",
-		"\\u", "<span style=\"color:#FF8C00\">\\u</span>", "\\\\", "<span style=\"color:#FF8C00\">\\\\</span>",
-		"\\\"", "<span style=\"color:#FF8C00\">\\\"</span>")
+	escapeReplacer := strings.NewReplacer(
+		"\\n", "<span style=\"color:#FF8C00\">\\n</span>",
+		"\\b", "<span style=\"color:#FF8C00\">\\b</span>",
+		"\\f", "<span style=\"color:#FF8C00\">\\f</span>",
+		"\\r", "<span style=\"color:#FF8C00\">\\r</span>",
+		"\\t", "<span style=\"color:#FF8C00\">\\t</span>",
+		"\\u", "<span style=\"color:#FF8C00\">\\u</span>",
+		"\\/", "<span style=\"color:#FF8C00\">\\/</span>",
+		"\\\\", "<span style=\"color:#FF8C00\">\\\\</span>",
+		"\\\"", "<span style=\"color:#FF8C00\">\\\"</span>",
+	)
 
 	// value used for indenting nested brackets and commas
 	numOfIndent := -1
 	// print the HTML headers
 	fmt.Println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")
-	fmt.Println("<html>\n<head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-8\">")
+	fmt.Println("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-8\"/>")
 	fmt.Println("<title>JSON to HTML Formater</title>\n</head><body style=\"background-color:#DEDEDC\">")
 	fmt.Println("<p><span style=\"font-family:monospace; white-space:pre\">")
 
@@ -127,38 +139,38 @@ func formatHTML(tokens *[]JSONtoken) {
 	for _, token := range *tokens {
 		switch token.key {
 		case BRACE:
-			fmt.Printf("<br>")
-			if token.value == "{" {
+			fmt.Printf("<br/>")
+			if token.lexeme == "{" {
 				numOfIndent++
 			}
 			for i := 0; i < numOfIndent; i++ {
 				fmt.Printf("&nbsp;&nbsp;")
 			}
-			fmt.Printf("<span style=\"color:red\">%v</span>", token.value)
-			if token.value == "}" {
+			fmt.Printf("<span style=\"color:red\">%v</span>", token.lexeme)
+			if token.lexeme == "}" {
 				numOfIndent--
 			}
 		case BRACKET:
-			fmt.Printf("<span style=\"color:#FFFF00\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#FFFF00\">%v</span>", token.lexeme)
 		case COMMA:
-			fmt.Printf("<span style=\"color:#FF00FF\">%v</span><br>", token.value)
+			fmt.Printf("<span style=\"color:#FF00FF\">%v</span><br/>", token.lexeme)
 			for i := 0; i < numOfIndent; i++ {
 				fmt.Printf("&nbsp;&nbsp;&nbsp;")
 			}
 		case COLON:
-			fmt.Printf("<span style=\"color:#3BB9FF\">%v &nbsp;</span>", token.value)
+			fmt.Printf("<span style=\"color:#3BB9FF\">%v &nbsp;</span>", token.lexeme)
 		case MINUS:
-			fmt.Printf("<span style=\"color:#F88017\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#F88017\">%v</span>", token.lexeme)
 		case NUMBER:
-			fmt.Printf("<span style=\"color:#2B65EC\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#2B65EC\">%v</span>", token.lexeme)
 		case NULTRUFLS:
-			fmt.Printf("<span style=\"color:#b22222\">%v</span>", token.value)
+			fmt.Printf("<span style=\"color:#b22222\">%v</span>", token.lexeme)
 		case STRING:
 			// replace html espcial characters and change color for escape chars
-			fmt.Printf("<span style=\"color:black\">%v</span>", escapeReplacer.Replace(htmlReplacer.Replace(token.value)))
+			fmt.Printf("<span style=\"color:black\">%v</span>", escapeReplacer.Replace(htmlReplacer.Replace(token.lexeme)))
 		}
 	}
 	// end of JSOC code
 
-	fmt.Println("</span></p></body></html>")
+	fmt.Println("</span></p></body></html>") // close HTML header tags
 }
