@@ -1,49 +1,27 @@
-{"web-app\"": 
-    {"servlet": [  
-        {"\nservlet-name": "cofaxCDS",
-        "servlet-class": null,
-        "\\init-param": {"configGlossary:installationAt": "Philadelphia, PA",
-                        "defaultFileTemplate": [12, -23.23E+12, null, 123.123e+12, true],
-                        "useJSP": false,
-                        "\bjspListTemplate": "listTemplate.jsp",
-                        "jspFileTemplate": "articleTemplate.jsp",
-                        "cachePackageTagsTrack": -200,
-                        "cachePackage\nTagsStore": 200,
-                        "cachePagesTrack": 200,
-                        "cachePagesStore": -100e+12,
-                        "search\rEngineRobotsDb": "WEB-INF/robots.db",
-                        "dataStoreInitConns": 10,
-                        "dataStoreMaxConns": 100,
-                        "dataStoreConnUsageLimit": 100,
-                        "\fdataStoreLogLevel": "debug",
-                        "maxUrlLength\t": 500
-                        }
-            },
-    {
-      "\u8ac7 servlet-class": "org.cofax.cds.EmailServlet",
-      "init-param": {
-      "\nmailHost": "mail1",
-      "mailHostOverride": "mail2"}},
-    {
-      "servlet-name": "cofaxAdmin",
-      "servlet-class": "org.cofax.cds.AdminServlet"},
- 
-    {
-      "servlet-class": "org.cofax.cds.FileServlet"},
-    {
-      "servlet-name": "cofaxTools",
-      "init-param": {
-        "templatePath": "toolstemplates/",
-        "log": 1,
-        "logMaxSize": "",
-        "adminGroupID": 4,
-        "betaServer": true}}],
-  "servlet-mapping": {
-    "cofaxCDS": "/",
-    "fileServlet": "/static/*",
-    "cofaxTools": "/tools/*"},
- 
-  "taglib": {
-    "taglib-uri": null,
-    "taglib-location": "/WEB-INF/tlds/cofax.tld"}}
-}
+{"\bmenu": {
+    "header": "SVG Viewer",
+    "asdf\ua203 rest \ua888a\uab99asdf\uadce": [
+        {"id\"": "Open"},
+        {"\"id\"\"": "OpenNew", "label": 12341234},
+        true,
+        {"\ua20a\ua888\uab99asdf\uabcd": "ZoomIn\"\"\"test", "label": "Zoom In"},
+        {"\ua20a\ua888\uab99asdf\uabcdaa": "ZoomOut", "label": "Zoom Out"},
+        {"id": "OriginalView", "label": "Original View"},
+        null,
+        {"id": -1234E+1},
+        {"id": "Pause"},
+        {"id": "Mute"},
+        null,
+        {"id": "Find", "label": "Find..."},
+        {"id": "ubc88FindAgain", "label": "Find Again"},
+        {"id": "Copy"},
+        {"id": "CopyAgain", "label": "Copy Again"},
+        {"id": "CopySVG", "label": "Copy SVG"},
+        {"id": "ViewSVG", "label": "View SVG"},
+        {"id": "ViewSource", "label": "View Source"},
+        {"id": "SaveAs", "label": "Save As"},
+        null,
+        {"id": "\tHelp"},
+        {"id": "About", "label": "About Adobe CVG Viewer..."}
+    ]
+}}
